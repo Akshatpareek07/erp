@@ -1,7 +1,13 @@
 import React,{useState} from 'react'
 import axios from 'axios'
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import '../components/loginUser';
+import { useNavigate } from 'react-router-dom';
+import '../loginUser.css'
 
 const Registration = () => {
+  const navigate = useNavigate();
   const [inputField,setInputField]=useState({
     username:'',
     email:'',
@@ -19,6 +25,7 @@ const Registration = () => {
   const inputHandler=(e)=>{
     setInputField({...inputField, [e.target.name]:e.target.value});
   }
+
   const Adduser=async ()=>{
     if(validForm())
     {
@@ -27,20 +34,27 @@ const Registration = () => {
       method:"POST",
       url:url,
       header:{
-
       },
       data:inputField
 
     }
     try{
-let response=await axios(options)
-      console.log(response);
+      let response=await axios(options)
+      if(response.status===200)
+      {
+        toast.success("Added Successfully");
+        // history.push('/login');
+        // <Redirect to="/login" />
+        // <Login/>
+        navigate('/login');
+      }
     }catch(e){
+      toast.error("Error!Unable to add");
       
     }
     }
-  else
-  console.log("invalid");
+  else 
+  toast.error("Invalid Form");
 
   }
   const validForm=()=>{
@@ -98,49 +112,62 @@ let response=await axios(options)
     }
     return formValid;
   }
+  const toLogin=()=>{
+    navigate('/login');
+  }
   return (
     <div className='container'>
     <div>
       <h3>Add Registration</h3><br/>
-      <div>
-        <form action='/login' method='post'>
-          <div>
+      <div className='form_container'>
+        <form action='/login' method='post' className='form'>
+          <div className='form_item'>
+            <div className='ip_item'>
               <label for='username'>User Name</label>
               <input type='text' id='username' name='username' value={inputField.username}
               onChange={inputHandler}/>
-              {errField.usernameErr.length>0&&<span>{errField.usernameErr}</span>}
+            </div>  
+              {errField.usernameErr.length>0&&<span className='span'>{errField.usernameErr}</span>}
 
           </div>
-          <div>
+          <div className='form_item'>
+            <div className='ip_item'>
               <label for='email'>Email</label>
               <input type='email' id='email' name='email' value={inputField.email}
               onChange={inputHandler}/>
-              {errField.emailErr.length>0&&<span>{errField.emailErr}</span>}
+              </div>
+              {errField.emailErr.length>0&&<span className='span'>{errField.emailErr}</span>}
           </div>
-          <div>
+          <div className='form_item'>
+            <div className='ip_item'>
               <label for='phone'>Phone No</label>
               <input type='number' id='phone' name='phone' value={inputField.phone}
               onChange={inputHandler}/>
-              {errField.phoneErr.length>0&&<span>{errField.phoneErr}</span>}
+              </div>
+              {errField.phoneErr.length>0&&<span className='span'>{errField.phoneErr}</span>}
               
           </div>
           
-          <div>
+          <div className='form_item'>
+              <div className='ip_item'>
               <label for='password'>Password</label>
               <input type='password' id='password' name='password' value={inputField.password}
               onChange={inputHandler}/>
-              {errField.passwordErr.length>0&&<span>{errField.passwordErr}</span>}
+              </div>
+              {errField.passwordErr.length>0&&<span className='span'>{errField.passwordErr}</span>}
           </div>
-          <div>
+          <div className='form_item'>
+            <div className='ip_item'>
               <label for='cpassword'>Confirm password</label>
               <input type='password' id='cpassword' name='cpassword' value={inputField.cpassword}
               onChange={inputHandler}/>
-              {errField.cpasswordErr.length>0&&<span>{errField.cpasswordErr}</span>}
+              </div>
+              {errField.cpasswordErr.length>0&&<span className='span'>{errField.cpasswordErr}</span>}
           </div>
-          <div>
-             <button type='button' onClick={Adduser}>Add User</button>
+          <div className='btn_area'>
+             <button type='button' onClick={Adduser} className='primaryBtn'>Add User</button>
               
-             <button type='submit'>Login</button>
+             <button type='botton' onClick={toLogin} className='primaryBtn'>Login</button>
               
           </div>
         </form>
